@@ -11,17 +11,18 @@
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
-<hr>
-<strong>Hola @name</strong>
-
 @code {
     //Aquí todo el código C#
     private int currentCount = 0;
-    private string name = "Gian";
-    public List<int> listNumbers = new List<int>{ 1,2,3};
 
     [Parameter]
     public string? currentCountParameter {get; set;}
+    
+    // otra forma de pasar parámetros
+    [SupplyParameterFromQuery]
+    [Parameter]
+    public string? CounterFromQuery {get; set;}
+
 
     //* blon  snippet   <===
     //blon set
@@ -36,7 +37,9 @@
     }
     protected override void OnInitialized()
     {
-        currentCount = currentCountParameter != null ? int.Parse(currentCountParameter) : 0;
+        //currentCount = currentCountParameter != null ? int.Parse(currentCountParameter) : 0;
+        currentCount = CounterFromQuery != null ? int.Parse(CounterFromQuery) : 0;
+        // * visita counter?CounterFromQuery=13   // por ejemplo
         looger.LogInformation("2. Se inicia el componente");
     }
     protected override void OnParametersSet()
