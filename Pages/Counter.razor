@@ -1,4 +1,5 @@
-﻿@page "/counter"
+﻿@page "/counter/{currentCountParameter?}"
+@inject ILogger<Counter> looger;
 
 @* Titulo de la página arriba en el navegador *@
 <PageTitle>Counter</PageTitle> 
@@ -17,10 +18,35 @@
     //Aquí todo el código C#
     private int currentCount = 0;
     private string name = "Gian";
-
     public List<int> listNumbers = new List<int>{ 1,2,3};
-    
-    //* blon  snippet
+
+    [Parameter]
+    public string? currentCountParameter {get; set;}
+
+    //* blon  snippet   <===
+    //blon set
+    public override async Task SetParametersAsync(ParameterView parameters)
+    {   // 1. Primero que se ejecuta
+        if (parameters.TryGetValue<string>(nameof(currentCountParameter), out var value))
+        {
+            if(value is not null)
+                currentCountParameter = value;
+        }
+        await base.SetParametersAsync(parameters);
+    }
+    protected override void OnInitialized()
+    {
+        currentCount = currentCountParameter != null ? int.Parse(currentCountParameter) : 0;
+        looger.LogInformation("2. Se inicia el componente");
+    }
+    protected override void OnParametersSet()
+    {
+        looger.LogInformation("3. Se envian los parametros");
+    }
+    protected override void OnAfterRender(bool firstRender)
+    {
+        looger.LogInformation("4. Esto ocurre después de iniciar el componente");
+    }
     private void IncrementCount()
     {
         currentCount++;
