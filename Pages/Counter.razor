@@ -1,0 +1,28 @@
+﻿@page "/counter"
+
+@* Titulo de la página arriba en el navegador *@
+<PageTitle>Counter</PageTitle> 
+
+<h1>Counter</h1>
+
+@* arroba para llamar codigo C# *@
+<p role="status">Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+<hr>
+<strong>Hola @name</strong>
+
+@code {
+    //Aquí todo el código C#
+    private int currentCount = 0;
+    private string name = "Gian";
+
+    public List<int> listNumbers = new List<int>{ 1,2,3};
+    
+    //* blon  snippet
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+}
