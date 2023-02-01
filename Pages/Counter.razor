@@ -1,5 +1,5 @@
 ﻿@page "/counter/{currentCountParameter?}"
-@inject ILogger<Counter> looger;
+@inject ILogger<Counter> logger;
 
 @* Titulo de la página arriba en el navegador *@
 <PageTitle>Counter</PageTitle> 
@@ -40,15 +40,15 @@
         //currentCount = currentCountParameter != null ? int.Parse(currentCountParameter) : 0;
         currentCount = CounterFromQuery != null ? int.Parse(CounterFromQuery) : 0;
         // * visita counter?CounterFromQuery=13   // por ejemplo
-        looger.LogInformation("2. Se inicia el componente");
+        logger.LogInformation("2. Se inicia el componente");
     }
     protected override void OnParametersSet()
     {
-        looger.LogInformation("3. Se envian los parametros");
+        logger.LogInformation("3. Se envian los parametros");
     }
     protected override void OnAfterRender(bool firstRender)
     {
-        looger.LogInformation("4. Esto ocurre después de iniciar el componente");
+        logger.LogInformation("4. Esto ocurre después de iniciar el componente");
     }
     private void IncrementCount()
     {

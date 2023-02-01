@@ -12,4 +12,9 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 var apiUrl = builder.Configuration.GetValue<string>("apiUrl");
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(apiUrl) });
 
+//vamos a realizar la inyección de dependecias para todos los componentes:
+builder.Services.AddScoped<IProductService, ProductService>();  //para la interfaz IProductService, el objeto q se crea internamnete cuando se inyecte la dependencia es ProductService
+builder.Services.AddScoped<ICategoryService, CategoryService>();  // lo mismo
+
+
 await builder.Build().RunAsync();
