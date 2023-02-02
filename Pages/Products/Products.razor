@@ -6,7 +6,7 @@
 <PageTitle>Products</PageTitle>
 
 <ModuleTitle Title="Products" />
-<button class="btn btn-dark" @onclick="@(() => NavigationManager.NavigateTo("/addproduct"))">Add Product</button>
+<button class="btn btn-dark mb-2" @onclick="@(() => NavigationManager.NavigateTo("/addproduct"))">Add Product</button>
 
 @if (products?.Count > 0)
 {
