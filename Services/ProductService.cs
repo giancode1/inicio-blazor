@@ -44,7 +44,7 @@ public class ProductService: IProductService
 
     public async Task Delete(int productId)
     {
-        var response = await client.DeleteAsync($"/v1/products/{productId}");
+        var response = await client.DeleteAsync($"v1/products/{productId}");
         var content = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {
