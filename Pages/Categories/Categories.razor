@@ -53,7 +53,7 @@ else
             return;
         
         await categoryService.Delete(category.Id);
-        toastService.ShowSuccess("Categoria eliminada");
+        toastService.ShowSuccess("Category removed");
         await GetCategories();
     }
 

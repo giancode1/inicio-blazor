@@ -2,6 +2,7 @@
 @inject IProductService productService;
 @inject ICategoryService categoryService;
 @inject NavigationManager NavigationManager;
+@inject IToastService toastService;
 
 <PageTitle>Update - Product - @Id</PageTitle>
 
@@ -56,13 +57,41 @@
         categories = await categoryService.Get();
         product = await productService.GetById(Id);
     }
+    private bool IsValidUrl(string url)
+    {
+        if (string.IsNullOrWhiteSpace(url))
+            return false;
+
+        try
+        {
+            var uri = new Uri(url);
+            return uri.IsAbsoluteUri;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 
     private async Task Save()
     {
-        product.Images = new string[1] { product.Image };
-        await productService.Update(Id, product);
-        //suponiendo q todo ocurrio bn
-        NavigationManager.NavigateTo("/product");
+        try
+        {
+            if (!IsValidUrl(product.Image))
+            {
+                toastService.ShowError("You must enter a valid URL for the image.");
+                return;
+            }
+            product.Images = new string[1] { product.Image };
+            await productService.Update(Id, product);
+            toastService.ShowSuccess("Product Updated");
+            //suponiendo q todo ocurrio bn
+            NavigationManager.NavigateTo("/product");
+        }
+        catch (System.Exception)
+        {
+            toastService.ShowError("Enter the fields correctly");
+        }
     }
 }
 
