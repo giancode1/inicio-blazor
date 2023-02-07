@@ -2,6 +2,7 @@
 @inject IProductService productService;
 @inject ICategoryService categoryService;
 @inject NavigationManager NavigationManager;
+@inject IToastService toastService;
 
 <PageTitle>Add - Category</PageTitle>
 
@@ -21,7 +22,7 @@
 
         <div class="col form-group">
             <label for="image" class="col-form-label">Image (Url)</label>
-            <InputText id="image" @bind-Value="category.Image" required class="form-control" />
+            <InputText id="image" @bind-Value="category.Image" class="form-control" />
         </div>
     </div>
 
@@ -32,8 +33,28 @@
 @code
 {
     private Category category = new();
+    private bool IsValidUrl(string url)
+    {
+        if (string.IsNullOrWhiteSpace(url))
+            return false;
+
+        try
+        {
+            var uri = new Uri(url);
+            return uri.IsAbsoluteUri;
+        }
+        catch
+        {
+            return false;
+        }
+    }
     private async Task Save()
     {
+        if (!IsValidUrl(category.Image))
+        {
+            toastService.ShowError("You must enter a valid URL for the image.");
+            return;
+        }
         category.Image = new string (category.Image );
 
         await categoryService.Add(category);
