@@ -1,21 +1,9 @@
 ﻿@page "/"
-@inject IConfiguration config;
+@inject NavigationManager NavigationManager;
 
-<PageTitle>Index</PageTitle>
-
-<ModuleTitle Title=@HelloMessage />
-
-Welcome to your new app!
-
-@* Componente: *@
-<SurveyPrompt Title="How is Blazor working for you?" />
-
-@code
-{
-    public string HelloMessage = "";
-
+@code {
     protected override void OnInitialized()
     {
-        HelloMessage = config["helloMessage"];
+        NavigationManager.NavigateTo("/product");
     }
 }

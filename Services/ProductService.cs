@@ -42,6 +42,28 @@ public class ProductService: IProductService
         }
     }
 
+    public async Task<Product> GetById(int productId)
+    {
+        var response = await client.GetAsync($"v1/products/{productId}");
+        var content = await response.Content.ReadAsStringAsync();
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new ApplicationException(content);
+        }
+        return JsonSerializer.Deserialize<Product>(content, options);
+    }
+
+
+    public async Task Update(int productId, Product product)
+    {
+        var response = await client.PutAsync($"v1/products/{productId}", JsonContent.Create(product));
+        var content = await response.Content.ReadAsStringAsync();
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new ApplicationException(content);
+        }
+    }
+
     public async Task Delete(int productId)
     {
         var response = await client.DeleteAsync($"v1/products/{productId}");
@@ -57,5 +79,7 @@ public interface IProductService
 {
     Task<List<Product>?> Get();
     Task Add(Product product);
+    Task<Product> GetById(int productId);
+    Task Update(int productId, Product product);
     Task Delete(int productId);
 }

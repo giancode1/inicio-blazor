@@ -1,0 +1,43 @@
+@page "/addcategory"
+@inject IProductService productService;
+@inject ICategoryService categoryService;
+@inject NavigationManager NavigationManager;
+
+<PageTitle>Add - Category</PageTitle>
+
+<ModuleTitle Title="Add category" />
+
+<button class="btn btn-dark" @onclick="@(() => NavigationManager.NavigateTo("/category"))">Go Back categories</button>
+
+<EditForm Model="@category" OnSubmit="@Save">
+    <div class="row">
+        <div class="col-8 form-group">
+            <label for="name" class="col-form-label">Name</label>
+            <InputText id="name" @bind-Value="category.Name" required class="form-control" />
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="col form-group">
+            <label for="image" class="col-form-label">Image (Url)</label>
+            <InputText id="image" @bind-Value="category.Image" required class="form-control" />
+        </div>
+    </div>
+
+    <hr>
+    <button class="btn btn-primary" type="submit">Save</button>
+</EditForm>
+
+@code
+{
+    private Category category = new();
+    private async Task Save()
+    {
+        category.Image = new string (category.Image );
+
+        await categoryService.Add(category);
+        NavigationManager.NavigateTo("/category");
+    }
+}
+
