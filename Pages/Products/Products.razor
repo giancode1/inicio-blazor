@@ -57,6 +57,11 @@ else
         products = await productService.Get();
     }
 
+    private void EditProduct(Product product)
+    {
+        NavigationManager.NavigateTo($"/editproduct/{product.Id}");
+    }
+
     private async Task DeleteProduct(Product product)
     {
         // esta alerta viene de JS. Librerias, componentes de js igual lo podemos invocar
@@ -66,11 +71,6 @@ else
         await productService.Delete(product.Id);
         toastService.ShowSuccess("Product Removed");
         await GetProducts();
-    }
-
-    private void EditProduct(Product product)
-    {
-        NavigationManager.NavigateTo($"/editproduct/{product.Id}");
     }
 
 }

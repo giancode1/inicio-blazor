@@ -24,9 +24,7 @@
 
     <div class="col-8 form-group">
         <label for="category" class="col-form-label">Category</label>
-        @* <InputSelect id="category" @bind-Value="product.CategoryId" required class="form-control" > *@
-
-        <InputSelect id="category" @bind-Value="@product.Category.Name" required class="form-control" >
+        <InputSelect id="category" @bind-Value="categoryName" required class="form-control" >
             <option>Select Category...</option>
             @foreach (var category in categories)
             {
@@ -36,7 +34,7 @@
     </div>
     <div class="col form-group">
         <label for="image" class="col-form-label">Image (Url)</label>
-        <InputText id="image" @bind-Value="product.Image" required class="form-control" />
+        <InputText id="image" @bind-Value="Image" required class="form-control" />
     </div>
 </div>
 <div class="form-group">
@@ -54,11 +52,16 @@
     public int Id { get; set; }
     private Product product = new();
     private List<Category> categories = new List<Category>();
+    private string Image { get; set; }
+    private string categoryName { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         categories = await categoryService.Get();
-        product = await productService.GetById(Id);
+        product = await productService.GetById(Id);  
+
+        Image = product.Images[0];
+        categoryName = categories.Where(c => c.Id == product.CategoryId).Select(c => c.Name).FirstOrDefault();
     }
     private bool IsValidUrl(string url)
     {
@@ -80,12 +83,13 @@
     {
         try
         {
-            if (!IsValidUrl(product.Image))
+            if (!IsValidUrl(Image))
             {
                 toastService.ShowError("You must enter a valid URL for the image.");
                 return;
             }
-            product.Images = new string[1] { product.Image };
+            product.Images = new string[1] { Image };
+            // * NOTA: la api no permite actualizar la categoria del producto.
             await productService.Update(Id, product);
             toastService.ShowSuccess("Product Updated");
             //suponiendo q todo ocurrio bn

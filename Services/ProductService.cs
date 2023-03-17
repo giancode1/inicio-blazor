@@ -9,7 +9,7 @@ public class ProductService: IProductService
     private readonly HttpClient client;
 
     private readonly JsonSerializerOptions options;
-    //Recibimos como inyección de dependecias el HttpClient que ua se encuentra conf de manera global en la app de blazor
+    //Recibimos como inyección de dependecias el HttpClient que ya se encuentra conf de manera global en la app de blazor
     //como toda app de .net lo recibimos en el constructor
     public ProductService(HttpClient httpClient)
     {
@@ -46,11 +46,27 @@ public class ProductService: IProductService
     {
         var response = await client.GetAsync($"v1/products/{productId}");
         var content = await response.Content.ReadAsStringAsync();
+
         if (!response.IsSuccessStatusCode)
         {
             throw new ApplicationException(content);
         }
+
+        // La respuesta de la api [v1/products/{productId}] tiene category { id: "1"} y no: categoryId: 1
+        // Lo adapto:
+        JsonDocument jsonDoc = JsonDocument.Parse(content);
+        JsonElement categoryElement = jsonDoc.RootElement.GetProperty("category");
+        JsonElement categoryIdElement = categoryElement.GetProperty("id");
+        int categoryId = categoryIdElement.GetInt32();
+
+        // otra opcion seria:
+        // dynamic obj = JsonSerializer.Deserialize<dynamic>(content);  
+        // string categoryId = obj.category.id.ToString();
+
+
         var product = JsonSerializer.Deserialize<Product>(content, options);
+
+        product.CategoryId = categoryId;
         return product;
     }
 

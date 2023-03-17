@@ -46,7 +46,7 @@ else
     private List<Category>? categories; // puede ser nulo
 
     protected override async Task OnInitializedAsync()
-    {//OnInitializedAsync: se encarga de asignar los datos iniciales que se vana mostrar en el componente
+    {//OnInitializedAsync: se encarga de asignar los datos iniciales que se van a mostrar en el componente
         await GetCategories();
     }
 
@@ -56,21 +56,28 @@ else
         categories = await categoryService.Get();
     }
 
+    private void EditCategory(Category category)
+    {
+        NavigationManager.NavigateTo($"/editcategory/{category.Id}");
+    }
+
     private async Task DeleteCategory(Category category)
     {
         // esta alerta viene de JS. Librerias, componentes de js igual lo podemos invocar
         if (!await JSRuntime.InvokeAsync<bool>("confirm", $"Are you sure you want to remove {category.Name}"))
             return;
 
-        await categoryService.Delete(category.Id);
-        toastService.ShowSuccess("Category removed");
-        await GetCategories();
+        try
+        { 
+            await categoryService.Delete(category.Id);
+            toastService.ShowSuccess("Category removed");
+            await GetCategories();
+        }
+        catch (System.Exception)
+        {
+            toastService.ShowError($"The category: {category.Name} cannot be deleted");
+            @* throw; *@
+        }
+
     }
-
-    private void EditCategory(Category category)
-    {
-        NavigationManager.NavigateTo($"/editcategory/{category.Id}");
-    }
-
-
 }
