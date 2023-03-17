@@ -8,7 +8,9 @@
 <PageTitle>Categories</PageTitle>
 
 <ModuleTitle Title="Categories" />
-<button class="btn btn-primary mb-4" @onclick="@(() => NavigationManager.NavigateTo("/addcategory"))">Add Category</button>
+<button class="btn btn-primary mb-4" @onclick="@(() => NavigationManager.NavigateTo("/addcategory"))">
+    Add Category
+</button>
 
 @if (categories?.Count > 0)
 {
@@ -19,8 +21,12 @@
                 <img class="card-img-top" src="@category.Image" alt="Category" loading="lazy" width="270" height="210" />
                 <div class="card-body">
                     <h4><b>@category.Name</b></h4>
-                    <button title="Eliminar" class="btn btn-danger btn-delete" @onclick="@(()=>DeleteCategory(category))"><span
-                    class="oi oi-trash"></span></button>
+                    <button title="Edit" class="btn btn-primary mr-2 btn-edit" @onclick="@(()=>EditCategory(category))">
+                        <span class="oi oi-pencil"></span>
+                    </button>
+                    <button title="Eliminar" class="btn btn-danger btn-delete" @onclick="@(()=>DeleteCategory(category))">
+                        <span class="oi oi-trash"></span>
+                    </button>
                 </div>
             </div>
         }
@@ -28,15 +34,19 @@
 }
 else
 {
-    <p>There are no categories to display</p>
+    <div class="text-center">
+        <div class="spinner-border" role="status">
+            <span class="sr-only"></span>
+        </div>
+    </div>
 }
 
 @code
 {
-    private List<Category>? categories;  // puede ser nulo
+    private List<Category>? categories; // puede ser nulo
 
     protected override async Task OnInitializedAsync()
-    {//OnInitializedAsync: se encarga de asignar los datos iniciales que se vana  mostrar en el componente
+    {//OnInitializedAsync: se encarga de asignar los datos iniciales que se vana mostrar en el componente
         await GetCategories();
     }
 
@@ -46,15 +56,21 @@ else
         categories = await categoryService.Get();
     }
 
-    private async Task  DeleteCategory(Category category)
+    private async Task DeleteCategory(Category category)
     {
         // esta alerta viene de JS. Librerias, componentes de js igual lo podemos invocar
-        if(!await JSRuntime.InvokeAsync<bool>("confirm", $"Are you sure you want to remove {category.Name}"))
+        if (!await JSRuntime.InvokeAsync<bool>("confirm", $"Are you sure you want to remove {category.Name}"))
             return;
-        
+
         await categoryService.Delete(category.Id);
         toastService.ShowSuccess("Category removed");
         await GetCategories();
     }
+
+    private void EditCategory(Category category)
+    {
+        NavigationManager.NavigateTo($"/editcategory/{category.Id}");
+    }
+
 
 }

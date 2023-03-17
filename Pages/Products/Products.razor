@@ -8,7 +8,9 @@
 <PageTitle>Products</PageTitle>
 
 <ModuleTitle Title="Products" />
-<button class="btn btn-success mb-4" @onclick="@(() => NavigationManager.NavigateTo("/addproduct"))">Add Product</button>
+<button class="btn btn-success mb-4" @onclick="@(() => NavigationManager.NavigateTo("/addproduct"))">
+    Add Product
+</button>
 
 @if (products?.Count > 0)
 {
@@ -20,10 +22,10 @@
                 <div class="card-body">
                     <h4><b>@product.Title</b></h4>
                     <p>@product.Price?.ToString("C", CultureInfo.GetCultureInfo("en-US"))</p>
-                     <button title="Edit" class="btn btn-primary mr-2 btn-edit" @onclick="@(()=>EditProduct(product))">
+                    <button title="Edit" class="btn btn-primary mr-2 btn-edit" @onclick="@(()=>EditProduct(product))">
                         <span class="oi oi-pencil"></span>
                     </button>
-                    <button title="Eliminar" class="btn btn-danger btn-delete" @onclick="@(()=>DeleteProduct(product))" >
+                    <button title="Eliminar" class="btn btn-danger btn-delete" @onclick="@(()=>DeleteProduct(product))">
                         <span class="oi oi-trash"></span>
                     </button>
                 </div>
@@ -33,15 +35,19 @@
 }
 else
 {//si products es nulo o su cuenta es menor igual a cero
-    <p>There are no products to display.</p>
+    <div class="text-center">
+        <div class="spinner-border" role="status">
+            <span class="sr-only"></span>
+        </div>
+    </div>
 }
 
 @code
 {
-    private List<Product>? products;  // puede ser nulo
+    private List<Product>? products; // puede ser nulo
 
     protected override async Task OnInitializedAsync()
-    {//OnInitializedAsync: se encarga de asignar los datos iniciales que se vana  mostrar en el componente
+    {//OnInitializedAsync: se encarga de asignar los datos iniciales que se vana mostrar en el componente
         await GetProducts();
     }
 
@@ -54,7 +60,7 @@ else
     private async Task DeleteProduct(Product product)
     {
         // esta alerta viene de JS. Librerias, componentes de js igual lo podemos invocar
-        if(!await JSRuntime.InvokeAsync<bool>("confirm", $"Are you sure you want to remove {product.Title}"))
+        if (!await JSRuntime.InvokeAsync<bool>("confirm", $"Are you sure you want to remove {product.Title}"))
             return;
 
         await productService.Delete(product.Id);

@@ -25,7 +25,7 @@
     <div class="row">
         <div class="col-8 form-group">
             <label for="category" class="col-form-label">Category</label>
-            <InputSelect id="category" @bind-Value="product.CategoryId" required class="form-control" >
+            <InputSelect id="category" @bind-Value="product.Category.Id" required class="form-control" >
                 <option>Select Category...</option>
                 @foreach (var category in categories)
                 {

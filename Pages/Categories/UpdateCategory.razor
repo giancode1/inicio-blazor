@@ -1,11 +1,11 @@
-@page "/addcategory"
+@page "/editcategory/{Id:int}"
 @inject ICategoryService categoryService;
 @inject NavigationManager NavigationManager;
 @inject IToastService toastService;
 
-<PageTitle>Add - Category</PageTitle>
+<PageTitle>Update - Category - @Id</PageTitle>
 
-<ModuleTitle Title="Add category" />
+<ModuleTitle Title="Update category" />
 
 <button class="btn btn-dark" @onclick="@(() => NavigationManager.NavigateTo("/category"))">Go Back categories</button>
 
@@ -30,8 +30,15 @@
 </EditForm>
 
 @code
-{
+{    
+    [Parameter]
+    public int Id { get; set; }
     private Category category = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        category = await categoryService.GetById(Id);
+    }
     private bool IsValidUrl(string url)
     {
         if (string.IsNullOrWhiteSpace(url))
@@ -57,9 +64,9 @@
                 return;
             }
             category.Image = new string (category.Image );
-
-            await categoryService.Add(category);
-            toastService.ShowSuccess("Category Added");
+            await categoryService.Update(Id, category);
+            toastService.ShowSuccess("Category Updated");
+            //suponiendo q todo ocurrio bn
             NavigationManager.NavigateTo("/category");
         }
         catch (System.Exception)

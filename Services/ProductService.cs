@@ -50,7 +50,8 @@ public class ProductService: IProductService
         {
             throw new ApplicationException(content);
         }
-        return JsonSerializer.Deserialize<Product>(content, options);
+        var product = JsonSerializer.Deserialize<Product>(content, options);
+        return product;
     }
 
 
