@@ -57,11 +57,21 @@
 
     protected override async Task OnInitializedAsync()
     {
-        categories = await categoryService.Get();
-        product = await productService.GetById(Id);  
+        try
+        {
+            categories = await categoryService.Get();
+            product = await productService.GetById(Id); 
 
-        Image = product.Images[0];
-        categoryName = categories.Where(c => c.Id == product.CategoryId).Select(c => c.Name).FirstOrDefault();
+            Image = product.Images[0];
+            categoryName = categories.Where(c => c.Id == product.CategoryId).Select(c => c.Name).FirstOrDefault();
+        }
+        catch (ApplicationException ex)
+        {
+            toastService.ShowError("Product not found");
+            NavigationManager.NavigateTo("/product");
+        }
+
+
     }
     private bool IsValidUrl(string url)
     {

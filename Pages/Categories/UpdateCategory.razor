@@ -37,7 +37,15 @@
 
     protected override async Task OnInitializedAsync()
     {
-        category = await categoryService.GetById(Id);
+        try
+        {
+            category = await categoryService.GetById(Id);
+        }
+        catch(ApplicationException ex)
+        {
+            toastService.ShowError("Category not found");
+            NavigationManager.NavigateTo("/category");
+        }
     }
     private bool IsValidUrl(string url)
     {
